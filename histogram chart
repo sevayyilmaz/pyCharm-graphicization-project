@@ -1,0 +1,79 @@
+import requests
+from bs4 import BeautifulSoup
+
+url="http://www.ranini.tv/reyting"
+response=requests.get(url)
+
+html_icerigi= response.content
+
+#websitesini parÃ§amalamk iÃ§in :
+soup= BeautifulSoup(html_icerigi,"html.parser")
+
+programlar=[]
+for i in soup.find_all("span", {"class":"w225"}):
+    i=i.text
+    i=i.strip()
+    i=i.replace("\n","")
+    programlar.append(i)
+
+programlist=[]
+sayacc=1
+for m in programlar:
+    if sayacc<=6:
+        programlist.append(programlar[sayacc])
+        sayacc+=1
+
+print(len(programlist))
+programlist.reverse()
+print(programlist)
+
+liste=[]
+for j in soup.find_all("span", {"class": "w63"}):
+    teks = j.text
+    teks= teks.strip()  # baÅŸtaki ve sondaki boÅŸluklarÄ± siler
+    teks = teks.replace("\n", "")  # tablarÄ± siler ve boÅŸluk koyar
+    liste.append(teks)
+#print(liste)
+
+
+oflist=[]
+k = 1
+for a in liste:
+    if k <= len(liste):
+        #print(liste[k])
+        oflist.append(liste[k])
+        k += 3
+#print(oflist)
+
+raytinglist=[]
+sayac=1
+for b in oflist:
+    if sayac<=6:
+        raytinglist.append(oflist[sayac])
+        sayac+=1
+print(len(raytinglist))
+raytinglist.reverse()
+
+print(raytinglist)
+
+floatreyringlist=[]
+for kelime in raytinglist:
+    string=kelime
+    new_string=string.replace(",", ".")
+    oldufloat=float(new_string)
+    floatreyringlist.append(oldufloat)
+    #print(oldufloat)
+
+
+print(floatreyringlist)
+
+
+import matplotlib.pyplot as plt
+plt.bar(programlist,floatreyringlist,width=0.5,color="crimson")
+
+plt.xlabel("Programs Names")
+plt.ylabel("Rating")
+plt.title("Rating of TV Programs")
+plt.subplots_adjust(top=0.88, bottom=0.11, left=0.09, right=0.95, hspace=0.25,
+                    wspace=0.25)
+plt.show()
